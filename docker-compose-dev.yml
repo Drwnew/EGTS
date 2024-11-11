@@ -1,0 +1,44 @@
+version: '3.5'
+services:
+
+  egts-server:
+#    image: dockerhub.cloud.gas.by/avtopark/odoo:15
+    build:
+      context: .
+      args:
+        - http_proxy
+        - https_proxy
+    container_name: egts-server
+    ports:
+      - 44444:44444
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    tty: false
+    privileged: true
+    env_file:
+      - .env
+    environment:
+      PYTHONDONTWRITEBYTECODE: ${PYTHONDONTWRITEBYTECODE}
+      PYTHONUNBUFFERED: ${PYTHONUNBUFFERED}
+      http_proxy:
+      https_proxy:
+    networks:
+      - telemeh-net
+    dns:
+      - 192.168.101.10
+    dns_search:
+      - oblgaz
+    logging:
+      options:
+        max-size: "10m"
+
+networks:
+  telemeh-net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: "22.22.44.0/24"
+
+
